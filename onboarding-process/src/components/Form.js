@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDom from 'react-dom';
 import { withFormik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
@@ -51,7 +50,7 @@ const FormikOnboardForm = withFormik({
   },
 
   validationSchema: Yup.object().shape({
-    name: Yup.string()
+    text: Yup.string()
     .name("Please enter your name")
     .required("Name is required"),
     email: Yup.string()
