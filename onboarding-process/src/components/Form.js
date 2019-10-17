@@ -4,7 +4,7 @@ import { withFormik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { __values } from 'tslib';
 
-function Form ({}) {
+function OnboardForm ({ values, errors, touched }) {
   return (
     <Form>
       <label>
@@ -40,4 +40,31 @@ function Form ({}) {
     </Form>
   );
 }
-export default Form;
+
+const FormikOnboardForm = withFormik({
+  mapPropsToValues({ name, email, password, accept }) {
+    return {
+      name: name || "",
+      email: email || "",
+      password: password || "",
+      accept: accept || false
+    };
+  },
+
+  validationSchema: Yup.object().shape({
+    name: Yup.string()
+    .name("Please enter your name")
+    .required("Name is required"),
+    email: Yup.string()
+    .email("Please enter a valid email")
+    .required("Email is required"),
+    password: Yup.string()
+    .password("Please enter your password")
+    .required("Password is required"),
+  }),
+
+  
+
+})(OnboardForm)
+
+export default FormikOnboardForm;
