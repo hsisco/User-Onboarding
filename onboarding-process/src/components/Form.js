@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import { withFormik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { __values } from 'tslib';
 
 function OnboardForm ({ values, errors, touched }) {
   return (
@@ -59,7 +58,7 @@ const FormikOnboardForm = withFormik({
     .email("Please enter a valid email")
     .required("Email is required"),
     password: Yup.string()
-    .password("Please enter your password")
+    .min(8, "Password must be at least 8 characters in length")
     .required("Password is required"),
   }),
 
