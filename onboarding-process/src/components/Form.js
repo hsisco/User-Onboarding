@@ -63,7 +63,9 @@ const FormikOnboardForm = withFormik({
     .required("Password is required"),
   }),
 
-  
+  handleSubmit(values) {
+    console.log(values);
+  }
 
 })(OnboardForm)
 
