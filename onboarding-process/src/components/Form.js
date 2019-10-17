@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { withFormik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
@@ -50,7 +51,7 @@ const FormikOnboardForm = withFormik({
   },
 
   validationSchema: Yup.object().shape({
-    text: Yup.string()
+    name: Yup.string()
     .name("Please enter your name")
     .required("Name is required"),
     email: Yup.string()
@@ -61,8 +62,18 @@ const FormikOnboardForm = withFormik({
     .required("Password is required"),
   }),
 
-  handleSubmit(values) {
-    console.log(values);
+  handleSubmit(values, { resetForm, setSubmitting }) {
+    axios
+      .post("https://reqres.in/api/users", values)
+      .then(response => {
+        console.log(response);
+        resetForm();
+        setSubmitting(false);
+      })
+      .catch(error => {
+        console.log("Nope, the handleSubmit isn't working.", error);
+        setSubmitting(false);
+      })
   }
 
 })(OnboardForm)
