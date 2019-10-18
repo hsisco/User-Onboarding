@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { withFormik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-function OnboardForm ({ values, errors, touched }) {
+function OnboardForm (props, { values, errors, touched }) {
+  const [userInfo, setUserInfo] = useState({name: "", email: "", password: "", accept: false});
+
   return (
     <Form>
       <label>
