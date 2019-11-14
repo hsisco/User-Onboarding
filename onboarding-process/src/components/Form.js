@@ -1,83 +1,127 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 import { withFormik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
+import {
+  Card,
+  CardDeck,
+  Button,
+  CardHeader,
+  CardBody,
+  CardTitle,
+  CardText,
+  CardImg
+} from 'reactstrap';
 
-function OnboardForm (props, { values, errors, touched }) {
-  const [userInfo, setUserInfo] = useState({name: "", email: "", password: "", accept: false});
-
+const OnboardingForm = ({ touched, status, errors, values }) => {
+  const [users, setUsers] = useState([]);
+  const [number, setNumber] = useState(1);
+  useEffect(() => {
+    if (status) {
+      setUsers([...users, status]);
+      setNumber(number + 1);
+    }
+  }, [status]);
   return (
-    <Form>
+    <>
+      <Form>
       <label>
+        Name
         {touched.name && errors.name && <p>{errors.name}</p>}
         <Field
         type="text"
         name="name" />
-        Name
       </label>
       <label>
+        Role
+      <Field name="role" className="role" component="select">
+            <option>Choose one</option>
+            <option value="WebDev">WebDev</option>
+            <option value="DataScientist">Data Scientist</option>
+            <option value="UXDesigner">UX Designer</option>
+            <option value="Audience">Just here for the show</option>
+          </Field>
+          </label>
+      <label>
+      Email
         {touched.email && errors.email && <p>{errors.email}</p>}
         <Field
         type="email"
         name="email" />
-        Email
+        
       </label>
       <label>
+      Password
         {touched.password && errors.password && <p>{errors.password}</p>}
         <Field
         type="password"
         name="password" />
-        Password
       </label>
       <label>
-        {touched.accept && errors.accept && <p>{errors.accept}</p>}
-        <Field
-        type="checkbox"
-        name="accept"
-        checked={values.accept} />
-        Accept Terms of Service
+      <label>
+      I accept the Terms of Service
+            <Field type="checkbox" name="checkbox" checked={values.tos} />
+            {touched.checkbox && errors.checkbox && <p>{errors.checkbox}</p>}
+            <span className="checkmark" />
+          </label>
       </label>
-      <button>Submit</button>
-    </Form>
+          <Button type="submit" className="btn">Submit!</Button>
+        </Form>
+      <CardDeck>
+        {users.map(user => (
+          <div className="card">
+            <Card key={user.id}>
+              <CardHeader tag="h3">Name: {user.name}</CardHeader>
+              <CardBody>
+                <CardTitle>Role: {user.role}</CardTitle>
+                <CardImg
+                  name="img"
+                  className="img"
+                  top
+                  src={`https://api.adorable.io/avatars/${number}`}
+                  alt="Adorable Avatar's API"
+                />
+                <CardText>Age: {user.age}</CardText>
+                <CardText>Email: {user.email}</CardText>
+              </CardBody>
+            </Card>
+          </div>
+        ))}
+      </CardDeck>
+    </>
   );
-}
-
-const FormikOnboardForm = withFormik({
-  mapPropsToValues({ name, email, password, accept }) {
+};
+const FormikForm = withFormik({
+  mapPropsToValues({ name, password, email, role, age, img, checkbox }) {
     return {
       name: name || "",
-      email: email || "",
       password: password || "",
-      accept: accept || false
+      email: email || "",
+      checkbox: checkbox || "",
+      role: role || "",
+      age: age || "",
+      img: img || ""
     };
   },
-
   validationSchema: Yup.object().shape({
-    name: Yup.string()
-    .name("Please enter your name")
-    .required("Name is required"),
-    email: Yup.string()
-    .email("Please enter a valid email")
-    .required("Email is required"),
-    password: Yup.string()
-    .min(8, "Password must be at least 8 characters in length")
+    name: Yup.string().required("Name is a Required Field !"),
+    password: Yup.string().min(4, "Password must be at least 8 characters in length")
     .required("Password is required"),
+    age: Yup.string().required("Age is required"),
+    email: Yup.string().required("Email is required"),
+    checkbox: Yup.string().required("Please Accept the Terms Of Service !")
   }),
-
-  handleSubmit(values, { resetForm, setSubmitting }) {
+  handleSubmit(values, { setStatus }) {
     axios
-      .post("https://reqres.in/api/users", values)
-      .then(response => {
-        console.log(response);
-        resetForm();
-        setSubmitting(false);
+      .post("https://reqres.in/api/users/", values)
+      .then(res => {
+        console.log("Nope, the handleSubmit isn't working.", res);
+        setStatus(res.data);
       })
-      .catch(error => {
-        console.log("Nope, the handleSubmit isn't working.", error);
-        setSubmitting(false);
-      })
+      .catch(err => {
+        console.log("This is the err res:", err.res);
+      });
   }
+})(OnboardingForm);
 
-})(OnboardForm)
-
-export default FormikOnboardForm;
+export default FormikForm;

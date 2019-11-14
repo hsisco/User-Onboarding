@@ -1,14 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import './App.css';
-import Form from './components/Form';
+import OnboardingForm from './components/Form';
 
 function App() {
   const [user, setUser] = useState();
 
   return (
     <div className="App">
-      <Form user={user} setUser={setUser} />
+      <OnboardingForm user={user} setUser={setUser} />
     </div>
   );
 }
