@@ -25,52 +25,51 @@ const OnboardingForm = ({ touched, status, errors, values }) => {
   return (
     <>
       <Form>
-      <label>
-        Name
-        {touched.name && errors.name && <p>{errors.name}</p>}
-        <Field
-        type="text"
-        name="name" />
-      </label>
-      <label>
-        Role
-      <Field name="role" className="role" component="select">
+        <label>
+          Name
+          {touched.name && errors.name && <p>{errors.name}</p>}
+          <Field
+            type="text"
+            name="name" />
+        </label>
+        <label>
+          Role
+          <Field name="role" className="role" component="select">
             <option>Choose one</option>
             <option value="WebDev">WebDev</option>
             <option value="DataScientist">Data Scientist</option>
             <option value="UXDesigner">UX Designer</option>
             <option value="Audience">Just here for the show</option>
           </Field>
-          </label>
-      <label>
-      Email
-        {touched.email && errors.email && <p>{errors.email}</p>}
-        <Field
-        type="email"
-        name="email" />
-        
-      </label>
-      <label>
-      Password
-        {touched.password && errors.password && <p>{errors.password}</p>}
-        <Field
-        type="password"
-        name="password" />
-      </label>
-      <label>
-      <label>
-      I accept the Terms of Service
-            <Field type="checkbox" name="checkbox" checked={values.tos} />
+        </label>
+        <label>
+          Email
+          {touched.email && errors.email && <p>{errors.email}</p>}
+          <Field
+            type="email"
+            name="email" />  
+        </label>
+        <label>
+          Password
+          {touched.password && errors.password && <p>{errors.password}</p>}
+          <Field
+            type="password"
+            name="password" />
+        </label>
+        <label>
+          I accept the Terms of Service
+          <Field
+            type="checkbox"
+            name="checkbox"
+            checked={values.tos} />
             {touched.checkbox && errors.checkbox && <p>{errors.checkbox}</p>}
             <span className="checkmark" />
-          </label>
-      </label>
-          <Button type="submit" className="btn">Submit!</Button>
-        </Form>
+        </label>
+        <Button type="submit" className="btn">Submit</Button>
+      </Form>
       <CardDeck>
         {users.map(user => (
-          <div className="card">
-            <Card key={user.id}>
+            <Card key={user.id} user={user}>
               <CardHeader tag="h3">Name: {user.name}</CardHeader>
               <CardBody>
                 <CardTitle>Role: {user.role}</CardTitle>
@@ -85,7 +84,6 @@ const OnboardingForm = ({ touched, status, errors, values }) => {
                 <CardText>Email: {user.email}</CardText>
               </CardBody>
             </Card>
-          </div>
         ))}
       </CardDeck>
     </>
@@ -104,12 +102,22 @@ const FormikForm = withFormik({
     };
   },
   validationSchema: Yup.object().shape({
-    name: Yup.string().required("Name is a Required Field !"),
-    password: Yup.string().min(4, "Password must be at least 8 characters in length")
-    .required("Password is required"),
-    age: Yup.string().required("Age is required"),
-    email: Yup.string().required("Email is required"),
-    checkbox: Yup.string().required("Please Accept the Terms Of Service !")
+    name: Yup
+      .string()
+      .required("Please enter your Name"),
+    password: Yup
+      .string()
+      .min(4, "Password must be at least 4 characters in length")
+      .required("Please enter your Password"),
+    age: Yup
+      .string()
+      .required("Please enter your Age"),
+    email: Yup
+      .string()
+      .required("Please enter your Email"),
+    checkbox: Yup
+      .string()
+      .required("Please Accept the Terms Of Service !")
   }),
   handleSubmit(values, { setStatus }) {
     axios
